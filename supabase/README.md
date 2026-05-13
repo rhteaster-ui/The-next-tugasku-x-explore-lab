@@ -68,7 +68,7 @@ A trigger on `auth.users INSERT` creates a row in both `profiles` and
 
 `connected_accounts.access_token_encrypted` and
 `refresh_token_encrypted` are wrapped in AES-256-GCM by
-`web/lib/crypto.ts`. The key lives in `TOKEN_ENCRYPTION_KEY` — generate
+`lib/crypto.ts`. The key lives in `TOKEN_ENCRYPTION_KEY` — generate
 one with:
 
 ```bash
