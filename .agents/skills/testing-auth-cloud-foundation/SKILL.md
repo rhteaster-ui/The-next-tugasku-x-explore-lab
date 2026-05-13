@@ -1,15 +1,15 @@
 ---
 name: testing-auth-cloud-foundation
-description: End-to-end test the web/ Next.js 14 auth + cloud foundation (Supabase Auth, RLS, guest IndexedDB, onboarding/splash, Google Calendar). Use whenever a PR touches web/, supabase/migrations/, or middleware.ts. Most golden-path checks work without Supabase creds (middleware bypasses); only login round-trip + cloud sync + Google Calendar OAuth need creds.
+description: End-to-end test the root Next.js 14 auth + cloud foundation (Supabase Auth, RLS, guest IndexedDB, onboarding/splash, Google Calendar). Use whenever a PR touches app/, components/, lib/, supabase/migrations/, or middleware.ts. Most golden-path checks work without Supabase creds (middleware bypasses); only login round-trip + cloud sync + Google Calendar OAuth need creds.
 ---
 
 # Testing the auth + cloud foundation
 
-The Next.js app lives under `web/`. Old folders (`Dipsik-ai-tes-project-main/`, `TugasKu4-main/`, `src/`) are kept as reference and are NOT what this skill tests.
+The Next.js app now lives at the repository root. Old reference folders (`Dipsik-ai-tes-project-main/`, `TugasKu4-main/`, `src/`) were removed so deploy platforms build the root Next.js app.
 
 ## When this skill applies
 
-- PRs that touch `web/app/**`, `web/components/**`, `web/lib/**`, `web/middleware.ts`, or `supabase/migrations/**`.
+- PRs that touch `app/**`, `components/**`, `lib/**`, `middleware.ts`, or `supabase/migrations/**`.
 - Anything touching the onboarding gate, sync badge, MigrationDialog, storage adapters, or Google Calendar integration routes.
 
 ## Devin Secrets Needed
@@ -27,7 +27,7 @@ Ask the user for what they have — don't request all three tiers up front. Most
 ## Step 0 — Boot the app
 
 ```
-cd web && npm install   # (cached by blueprint)
+npm install   # (cached by blueprint)
 npm run dev             # serves on :3000
 ```
 
@@ -85,7 +85,7 @@ Navigate to each via the URL bar. Both must render full content; no redirect to 
 ## Step 3 — Tier-1 checks (Supabase configured)
 
 1. Apply `supabase/migrations/0001_initial_schema.sql` via the Supabase SQL editor or `supabase db push`.
-2. Set tier-1 env vars in `web/.env.local`.
+2. Set tier-1 env vars in `.env.local`.
 3. Restart `npm run dev`.
 4. Now `/auth/login` no longer shows the amber notice. Submit a valid email → expect "Tautan masuk dikirim" success state.
 5. After session is established (callback writes auth cookie), navigate to `/tugasku/dashboard`. If guest-mode IndexedDB has rows from a previous tier-0 session, the **MigrationDialog** mounts and offers Merge / Push local / Keep local. Inspect Supabase `tasks` table after Merge to confirm RLS-scoped rows landed.
@@ -102,14 +102,14 @@ Navigate to each via the URL bar. Both must render full content; no redirect to 
 
 - **`computer.console` tool refuses with "Chrome is not in the foreground"** even when Chrome is the active window per `xdotool getactivewindow`. Workaround: drive DevTools Application UI directly (F12 → Application → Local/Session Storage / IndexedDB) for storage assertions. This is more visible to a recording viewer anyway.
 - **Splash brand entrance is 1100ms.** Easy to miss with a screenshot. Use the recording itself as primary evidence and the sessionStorage re-write as indirect proof.
-- **`web/lib/crypto.ts` is server-only.** Importing it from a client component will fail the build with a node:crypto bundling error — this is intentional and protects encryption keys.
+- **`lib/crypto.ts` is server-only.** Importing it from a client component will fail the build with a node:crypto bundling error — this is intentional and protects encryption keys.
 - **The `/tugasku/dashboard` page mounts `MigrationDialog` but it returns null for guests.** Don't try to trigger MigrationDialog without an authenticated session.
 - **Dropdown options can render with dark CSS that hides hovered rows visually.** When testing the priority select, just click the position where the option would be (Rendah/Sedang/Tinggi) — the selection takes effect even if the visual is faint.
-- **Repo has 4 top-level project roots**: `web/` (new — what this skill tests), `Dipsik-ai-tes-project-main/`, `TugasKu4-main/`, `src/` (reference only — `testing-explore-lab` skill covers the Dipsik one).
+- **Repo has one deployable Next.js project root**: the repository root. The old reference roots were intentionally removed.
 
 ## Lint / build / typecheck commands
 
-From `web/`:
+From the repository root:
 - `npm run lint` — ESLint, must be 0 warnings
 - `npm run typecheck` — `tsc --noEmit`, must be 0 errors
 - `npm run build` — production build, must succeed (26 routes as of PR #1)

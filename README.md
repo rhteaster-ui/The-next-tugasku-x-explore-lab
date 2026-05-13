@@ -14,21 +14,25 @@ yang benar (3-slide hanya untuk first run).
 
 ```
 .
-├── web/                 # Next.js 14 App Router + TypeScript app
+├── app/                 # Next.js 14 App Router routes + API routes
+├── components/          # Reusable React components
+├── lib/                 # Supabase, storage, Google Calendar, crypto helpers
+├── public/              # Static assets, manifest, icons, onboarding images
 ├── supabase/            # SQL migrations + RLS
-├── Dipsik-ai-tes-project-main/   # legacy: Explore Lab static prototype
-├── TugasKu4-main/                # legacy: TugasKu single-page PWA
-└── src/                          # legacy assets (splash, icons)
+├── middleware.ts        # Protected route gating
+├── next.config.mjs      # Next.js config
+└── package.json         # Root Next.js scripts for deploy platforms
 ```
 
-Folder `Dipsik-ai-tes-project-main/`, `TugasKu4-main/`, dan `src/`
-adalah artefak fase sebelumnya — tidak digunakan oleh `web/` tapi
-sengaja dipertahankan sebagai referensi visual & API gateway.
+Folder referensi lama `Dipsik-ai-tes-project-main/`, `TugasKu4-main/`,
+dan `src/` sudah dihapus agar root repo langsung menjadi root aplikasi
+Next.js. Dengan struktur ini, deploy platform seperti Vercel dapat
+menjalankan `npm run build` dari root tanpa jatuh ke artefak statis lama
+atau menghasilkan 404 karena root project keliru.
 
 ## Quick start
 
 ```bash
-cd web
 cp .env.example .env.local
 # isi NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, dst.
 npm install
@@ -40,7 +44,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 ## 1. File & struktur auth
 
 ```
-web/
+.
 ├── app/
 │   ├── auth/
 │   │   ├── login/page.tsx              # halaman masuk
@@ -246,7 +250,6 @@ default tidak meminta akses Calendar.
 ## Scripts
 
 ```bash
-cd web
 npm run dev         # next dev
 npm run build       # production build
 npm run start       # node server
