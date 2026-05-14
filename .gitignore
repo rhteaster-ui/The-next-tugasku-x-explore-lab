@@ -1,8 +1,19 @@
 node_modules/
 .next/
 out/
+.vercel/
 .env
 .env.local
 .env.*.local
 *.tsbuildinfo
 .DS_Store
+
+# Test artifacts (local only, not for repo)
+test-plan.md
+test-report.md
+
+# Old layouts — root is the Next.js app
+web/
+Dipsik-ai-tes-project-main/
+TugasKu4-main/
+src/
